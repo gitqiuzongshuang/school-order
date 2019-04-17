@@ -32,7 +32,7 @@
 <script src="../../layui.js"></script>
 <script src="../../js/jquery.js"></script>
 <script src="../../js/jquery.cookie.js"></script>
-
+<script type="text/javascript" src="../../js/jquery.params.js"></script>
 <div class="layui-container">
 
     <div class="layui-row" >
@@ -57,6 +57,7 @@
 
 </script>
 <script type="text/html" id="rightBar">
+	<a class="layui-btn layui-btn-default layui-btn-xs" lay-event="edit">修改</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
@@ -203,24 +204,31 @@
                 });
             } else if(layEvent === 'edit'){ //编辑
                 //do something
+                var id=obj.data['id'];
+                var name=obj.data['name'];
+                var material=obj.data['material'];
+                var cookingtime=obj.data['cookingtime'];
+                window.location.href="editDish.html?id="+id+"&name="+name+"&material="+material+"&cookingtime="+cookingtime;
             }
             return false;
         });
         table.on('edit(dishes)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
             $.ajax({
-                type: "get",
-                url: "http://47.105.187.18/managerPlatform/category/CategoryEdit.do",
+                type: "post",
+                url: "http://localhost:8080/school-order/dishes/editDish.do",
                 dataType: "json",
                 async: false,
                 data:{
                     id:obj.data['id'],
                     name:obj.data['name'],
-                    window:obj.data['window'],
                     material:obj.data['material'],
                     cookingtime:obj.data['cookingtime']
                 },
                 success: function(data) {
-                    alert("修改成功");
+                    if (data=="success") {
+                    	 alert("修改成功");
+					}
+                   
                 }
             });
         });

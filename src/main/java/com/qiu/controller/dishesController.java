@@ -35,10 +35,8 @@ public class dishesController {
     @RequestMapping("dishesShow.do")
     @ResponseBody
     public Map<String, Object> ShowPhoto(Page page,String context,HttpServletRequest request) {
-		System.out.println("进入dishes！");
         dishesExample example = new dishesExample();
         Integer id=(Integer) request.getSession().getAttribute("adminId");
-        System.out.println("session:"+id);
         
         if(id!=null&&context==null) {
         	
@@ -47,7 +45,6 @@ public class dishesController {
         else if(id!=null&&context!=null){
         	example.createCriteria().andWindowEqualTo(adminServiceI.getAdminById(id).getWindow()).andNameLike("%"+context+"%");
         }
-        System.out.println("context:"+context);
         List<dishes> list = dishesServiceI.showDish(example);
         int tempMin = Math.min(list.size(), page.getPage() * page.getLimit());
         List<dishes> dishesPages = new ArrayList<>();
@@ -78,7 +75,6 @@ public class dishesController {
     public Map<String, Object> imgUpload(@RequestParam(value = "file") MultipartFile img, dishes dishes,HttpSession session) throws IllegalStateException, IOException{
     	Map<String, Object> map=new HashMap<String,Object>();
           Integer id=(Integer) session.getAttribute("adminId");
-          System.out.println("session:"+id);
           if(id!=null) {
         	 dishes.setWindow(adminServiceI.getAdminById(id).getWindow());
         	 String fileUrl=fileController.uploadFile("image",img);
@@ -93,6 +89,36 @@ public class dishesController {
           
           
     	return map;
+    }
+    @RequestMapping("editDish.do")
+    @ResponseBody
+    public Map<String, Object> editDish(@RequestParam(value = "file") MultipartFile img, dishes dishes) throws IllegalStateException, IOException {
+    	Map<String, Object> map=new HashMap<String,Object>();
+        if(img!=null) {
+      	 String fileUrl=fileController.uploadFile("image",img);
+           dishes.setPicurl(fileUrl);
+           
+           int r=dishesServiceI.modifyDish(dishes);
+           System.out.println(r+"------------"+fileUrl);
+           map.put("code", 0);
+           map.put("msg", "");
+           map.put("data", fileUrl);
+        }else if(img==null) {
+        	
+        	int r=dishesServiceI.modifyDish(dishes);
+        	System.out.println(r+"------------");
+            map.put("code", 0);
+            map.put("msg", "");
+            map.put("data", "");
+		}
+             
+  	return map;
+    }
+    @RequestMapping("getData.do")//修改菜品信息时负责赋初值的数据
+    @ResponseBody
+    public dishes getData(int id) {
+    	dishes dishes=dishesServiceI.getDishById(id);
+    	return dishes;
     }
 
 }

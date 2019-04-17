@@ -11,8 +11,8 @@
 </head>
 
 <body class="layui-layout-body">
-<div id="app">
-    <div class="layui-layout layui-layout-admin">
+<!--<div id="app">-->
+    <div  class="layui-layout layui-layout-admin" >
         <div class="layui-header">
             <div class="layui-logo" style="font-size: 20px;color: #CAE1FF;">校内订餐系统后台</div>
             <!-- 头部区域（可配合layui已有的水平导航） -->
@@ -42,19 +42,19 @@
             </li>
             </ul>-->
             <ul class="layui-nav layui-layout-right">
-                <li class="layui-nav-item">
-                    <a  id="userName" href="javascript:;" onclick="quit()">
+                <li class="layui-nav-item" >
+                    <a  id="userName" href="javascript:;">
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{admin.name}}
                     </a>
-                   <!-- <dl class="layui-nav-child">
-                        &lt;!&ndash;<dd>&ndash;&gt;
-                        &lt;!&ndash;<a href="">修改密码</a>&ndash;&gt;
-                        &lt;!&ndash;</dd>&ndash;&gt;
-                        &lt;!&ndash;如果要加 再解掉注释&ndash;&gt;
+                    <dl class="layui-nav-child">
+                        <!--<dd>-->
+                        <!--<a href="">修改密码</a>-->
+                        <!--</dd>-->
+                        <!--如果要加 再解掉注释-->
                         <dd>
-                            <a href="" onclick="quit()">安全退出</a>
+                            <a href="javascript:;" onclick="quit()">安全退出</a>
                         </dd>
-                    </dl>-->
+                    </dl>
 
                 </li>
 
@@ -69,7 +69,7 @@
                         <a class="" href="ownWindow/windowShow.html" target="main">窗口信息管理</a>
                     </li>
                     <li class="layui-nav-item layui-nav-itemed">
-                        <a class="" href="orders/test.html" target="main">订单管理</a>
+                        <a class="" href="orders/ordersShow.html" target="main">订单管理</a>
                     </li>
                     <li class="layui-nav-item layui-nav-itemed" >
                         <a class="" href="dishes/dishesShow.html" target="main">菜品管理</a>
@@ -114,14 +114,14 @@
             <div class="layui-col-lg-offset4">© - 燕山大学大数据与人工智能中心</div>
         </div>
     </div>
-</div>
+<!--</div>-->
 
 <script src="../layui.js"></script>
 <script src="../layui.all.js"></script>
 <script src="../js/jquery.js"></script>
 <script src="../js/jquery.cookie.js"></script>
 <script>
-    initalize();
+    getAdmin();
     function getAdmin() {
         var admin;
         $.ajax({
@@ -134,12 +134,14 @@
             },
             success: function (data) {
                 admin = data;
-                console.log(admin);
+                console.log(admin.name);
+                document.getElementById("userName").innerHTML = admin.name;
+
             }
         });
-        return admin;
     }
-    function initalize() {
+
+    /*function initalize() {
         var admin=getAdmin();
         var vue = new Vue({
             el: "#app",
@@ -147,14 +149,13 @@
                 admin:admin
             },
             methods: {
-                reload() {
-                }
+
             }
         });
-    }
+    }*/
     layui.use('element', function() {
         var element = layui.element;
-
+        element.init();
     });
 
     function quit() {
@@ -175,6 +176,7 @@
 
         });
     }
+
 </script>
 
 </body>

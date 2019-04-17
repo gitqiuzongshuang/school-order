@@ -10,6 +10,8 @@
     <link href="../../bootstrap-3.3.7-dist/css/bootstrap.css" rel="stylesheet">
     <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
     <script type="text/javascript" src="../../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery.params.js"></script>
+    <script type="text/javascript" src="../../js/vue.min.js"></script>
 </head>
 <body>
 <div class="layui-container">
@@ -34,21 +36,21 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">菜品名称</label>
                             <div class="layui-input-block">
-                                <input type="text" name="introTitle" id="dishesName" class="layui-input" title="菜品名称"
+                                <input type="text" name="introTitle" id="dishesName" :value="dishes.name" class="layui-input" title="菜品名称"
                                        placeholder="请输入菜名">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">主料</label>
                             <div class="layui-input-block">
-                                <input type="text" name="introTitle" id="material" class="layui-input" title="主料"
+                                <input type="text" name="introTitle" id="material" :value="dishes.material" class="layui-input" title="主料"
                                        placeholder="请输入主料">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">烹饪时长</label>
                             <div class="layui-input-block">
-                                <input type="text" name="introTitle" id="cookingtime" class="layui-input" title="烹饪时长"
+                                <input type="text" name="introTitle" id="cookingtime" :value="dishes.cookingtime" class="layui-input" title="烹饪时长"
                                        placeholder="请输入烹饪时长">
                             </div>
                         </div>
@@ -99,20 +101,16 @@
 <script src="../../layui.js" charset="utf-8"></script>
 <script src="../../js/jquery.cookie.js"></script>
 <script>
-    layui.use('form', function(){
-        var form = layui.form;
-        form.render();
-    });
-    function check() {
+    /* function check() {
         if ($('#imgSumbmit').val()=='1') {
             layer_alert("请填写完善成果信息（描述及图片）");
         }
     }
     function setValue() {
         $('#imgSumbmit').val('2');
-    }
+    } */
 </script>
-<!-- <script>
+<!--<script>
     function renderForm(){
         layui.use('form', function(){
             var form = layui.form();//高版本建议把括号去掉，有的低版本，需要加()
@@ -139,10 +137,47 @@
 
         });
     }
-</script> -->
+</script>-->
 <script>
-    var photoDes;
-    var subjectId;
+    var dishId
+    initalize();
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
+    function getData() {
+        var id=$.query.get("id");
+        console.log(id);
+        dishId=id;
+        var dishes;
+        $.ajax({
+            url: "http://localhost:8080/school-order/dishes/getData.do",
+            data:{ id:id },
+            dataType: "json",
+            async: false,
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function (data) {
+                dishes = data;
+                console.log(dishes);
+            }
+        });
+        return dishes;
+    }
+    function initalize(){
+        var dishes=getData();
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                dishes:dishes
+            },
+            methods: {
+                reload() {
+                }
+            }
+        });
+    }
     layui.use('upload', function(){
         var upload = layui.upload;
         //执行实例
@@ -150,7 +185,7 @@
         var uploadInst = upload.render({
             elem: '#test1' //绑定元素
             ,auto:false
-            ,url:'http://localhost:8080/school-order/dishes/dishesUpload.do' //上传接口
+            ,url:'http://localhost:8080/school-order/dishes/editDish.do' //上传接口
             , xhrFields: {
                 withCredentials: true
             }
@@ -159,7 +194,10 @@
             ,multiple:'false'
             ,bindAction:'#imgSumbmit'
             ,data:{
-                name:function () {
+                id:function () {
+                    return dishId;
+                }
+                ,name:function () {
                     return $('#dishesName').val();
                 }
                 ,material:function () {
