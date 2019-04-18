@@ -79,4 +79,10 @@ public class adminServiceImpl implements adminServiceI {
 		}
 	}
 
+	@Override
+	public List<admin> showAdmin(adminExample adminExample) {
+		// TODO Auto-generated method stub
+		return adminMapper.selectByExample(adminExample);
+	}
+
 }

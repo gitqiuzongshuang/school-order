@@ -1,5 +1,7 @@
 package com.qiu.service;
 
+import java.util.List;
+
 import com.qiu.pojo.admin;
 import com.qiu.pojo.adminExample;
 
@@ -12,5 +14,6 @@ public interface adminServiceI {
     public int delAdminByExample(adminExample adminExample);
     public admin login(admin admin);
     public admin getAdminByaccount(String account);
+    public List<admin> showAdmin(adminExample adminExample);
 
 }

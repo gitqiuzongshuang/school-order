@@ -1,5 +1,9 @@
 package com.qiu.controller;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -25,11 +29,15 @@ public class loginController {
 			admin2=adminServiceI.getAdminByaccount(admin2.getAccount());
 			HttpSession session=request.getSession();
 			session.setAttribute("adminId", admin2.getId());
-			return "1";
+			if(admin2.getAuthority()==0) {
+				return "1";
+			}else if (admin2.getAuthority()==1) {
+				return "2";
+			}
+			
 		}
-		else {
+
 			return "fail";
-		}
 		
 	}
 
@@ -38,6 +46,13 @@ public class loginController {
 	public String quit(HttpServletRequest request) {
 		System.out.println("进入quit");
 		HttpSession session=request.getSession();
+		Integer id=(Integer) session.getAttribute("adminId");
+		if (id!=null) {
+			admin admin=adminServiceI.getAdminById(id);
+			Date date=new Date();
+			admin.setLastdate(date);
+			int r=adminServiceI.modifyAdmin(admin);
+		}
 		session.invalidate();
 		return "success";
 	}

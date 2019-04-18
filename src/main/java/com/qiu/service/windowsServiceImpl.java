@@ -16,7 +16,7 @@ public class windowsServiceImpl implements windowsServiceI {
 	@Override
 	public int addWindow(windows windows) {
 		// TODO Auto-generated method stub
-		return windowsMapper.insert(windows);
+		return windowsMapper.insertSelective(windows);
 	}
 
 	@Override
@@ -59,6 +59,12 @@ public class windowsServiceImpl implements windowsServiceI {
 			return list.get(0);
 		}
 		return null;
+	}
+
+	@Override
+	public List<windows> showWindows(windowsExample windowsExample) {
+		// TODO Auto-generated method stub
+		return windowsMapper.selectByExample(windowsExample);
 	}
 
 }
